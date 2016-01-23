@@ -51,9 +51,9 @@ public class Controller {
      * @return text
      */
     public String getText(int option) {
-        PDFTextStripper pdfStripper = null;
-        PDDocument pdDoc = null;
-        COSDocument cosDoc = null;
+        PDFTextStripper pdfStripper;
+        PDDocument pdDoc;
+        COSDocument cosDoc;
         String text = new String();
         try {
             PDFParser parser;
@@ -121,6 +121,9 @@ public class Controller {
         }
     }
 
+    /**
+     * Main function for spell checking
+     */
     public void spellChecking() {
         String text;
         SpellChecking spellChecking = new SpellChecking();
@@ -136,6 +139,12 @@ public class Controller {
         //processWords(databaseWords, words);
     }
 
+    /**
+     * Process the words from db
+     *
+     * @param databaseWords
+     * @param words
+     */
     private void processWords(DatabaseWords databaseWords, String[] words) {
         for (String word : words) {
             try {

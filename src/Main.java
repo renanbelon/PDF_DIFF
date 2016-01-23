@@ -27,9 +27,6 @@ public class Main extends JPanel implements ActionListener {
     private static int first = 0, second = 0;
     static Controller controller;
 
-    /**
-     * constructor
-     */
     public Main() {
         super(new BorderLayout());
         // Create the log first, because the action listeners
@@ -87,11 +84,6 @@ public class Main extends JPanel implements ActionListener {
                 controller.setTarget(file);
                 log.append("\nReady: " + file.getAbsolutePath() + "." + newline + "----------------------------------------\n");
                 log.append("\nProcessing files...\nThis will take up to 50 seconds..\n");
-//                ActionListener listener = e1 -> log.append("\nProcessing files...\nThis will take up to 50 seconds..\n");
-//                Timer timer = new Timer(50000, listener);
-//                timer.setRepeats(false);
-//                timer.setDelay(50000);
-//                timer.start();
                 synchronized (controller) {
                     try {
                         controller.wait(50000);
@@ -143,9 +135,7 @@ public class Main extends JPanel implements ActionListener {
                 UIManager.put("swing.boldMetal", Boolean.FALSE);
                 createAndShowGUI();
             });
-        } else if (value == 1) {
-            // TODO
+        } else if (value == 1)
             controller.spellChecking();
-        }
     }
 }

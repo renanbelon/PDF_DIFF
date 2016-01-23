@@ -10,7 +10,6 @@ import java.io.File;
 public class SpellChecking extends Component {
     private File file;
     JFileChooser fc;
-    JButton sourceButton;
 
     public SpellChecking() {
 

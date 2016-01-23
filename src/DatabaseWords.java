@@ -12,7 +12,9 @@ public class DatabaseWords {
     Statement stmt;
     ResultSet rs;
 
-
+    /**
+     * establish the connection with the db
+     */
     public void createConnection() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -26,6 +28,9 @@ public class DatabaseWords {
         }
     }
 
+    /**
+     * creating tables by executing dictionarysql file
+     */
     public void createTable() {
         String aSQLScriptFilePath = "G:\\Informatica\\java workspace\\Comparing PDFS\\src\\resources\\dictionarysql.sql";
         try {
@@ -50,6 +55,10 @@ public class DatabaseWords {
         }
     }
 
+    /**
+     * displaying data
+     * JUST FOR TESTING
+     */
     public void displayData() {
         try {
             rs = stmt.executeQuery("SELECT word FROM entries WHERE word='zymoscope'");
@@ -61,6 +70,12 @@ public class DatabaseWords {
         }
     }
 
+    /**
+     * Search for a specific word in database.
+     * If word exists, the function return true, otherwise false.
+     * @param word
+     * @return true/false
+     */
     public boolean searchFor(String word) {
         try {
             String singular = null;
@@ -81,5 +96,4 @@ public class DatabaseWords {
         }
         return false;
     }
-
 }
