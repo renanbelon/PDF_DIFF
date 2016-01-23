@@ -22,7 +22,7 @@ public class Main extends JPanel implements ActionListener {
     static private final String newline = "\n";
     JButton sourceButton;
     JButton targetButton;
-    public static JTextArea log;
+    JTextArea log;
     JFileChooser fc;
     private static int first = 0, second = 0;
     static Controller controller;
