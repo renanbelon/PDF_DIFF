@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="Comparing PDFS">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/pdfbox-app-1.8.10.jar!/" />
+      <root url="jar://$PROJECT_DIR$/edu.mit.jwi_2.4.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/apache-logging-log4j.jar!/" />
+      <root url="jar://$PROJECT_DIR$/jazzy0-2-1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/ibatis2-common-2.1.7.597.jar!/" />
+      <root url="jar://$PROJECT_DIR$/google-api-spelling-java-1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/mysql-connector-java-5.1.36-bin.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
