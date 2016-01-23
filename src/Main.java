@@ -62,6 +62,7 @@ public class Main extends JPanel implements ActionListener {
 
     /**
      * Do the job when one button is clicked
+     *
      * @param e
      */
     public void actionPerformed(ActionEvent e) {
@@ -145,7 +146,6 @@ public class Main extends JPanel implements ActionListener {
         } else if (value == 1) {
             // TODO
             controller.spellChecking();
-           // JOptionPane.showMessageDialog(null, "Function not implemented.");
         }
     }
 }

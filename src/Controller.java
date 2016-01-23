@@ -46,6 +46,7 @@ public class Controller {
     /**
      * return the text of the source file
      * or the text of the target file
+     *
      * @param option
      * @return text
      */
@@ -90,6 +91,7 @@ public class Controller {
     /**
      * Create a new frame and display the whole content
      * with colors: WHITE, RED, GREEN.
+     *
      * @param list
      */
     public void smecherie(LinkedList<diff_match_patch.Diff> list) {
@@ -114,7 +116,8 @@ public class Controller {
                 StyleConstants.setBackground(style, Color.GREEN);
             try {
                 doc.insertString(doc.getLength(), diff.text, style);
-            } catch (BadLocationException e) {}
+            } catch (BadLocationException e) {
+            }
         }
     }
 
@@ -128,13 +131,13 @@ public class Controller {
         DatabaseWords databaseWords = new DatabaseWords();
         databaseWords.createTable();
         databaseWords.createConnection();
-       databaseWords.displayData();
+        databaseWords.displayData();
 
         //processWords(databaseWords, words);
     }
 
     private void processWords(DatabaseWords databaseWords, String[] words) {
-        for(String word : words) {
+        for (String word : words) {
             try {
                 int value = Integer.parseInt(word);
             } catch (Exception e) {
