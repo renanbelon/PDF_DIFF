@@ -118,6 +118,11 @@ public class Controller {
         }
     }
 
+    /**
+     * This method verifies if a string is number
+     * @param s
+     * @return true/false
+     */
     private boolean isNumber(String s) {
         try {
             int number = Integer.parseInt(s);
@@ -127,6 +132,13 @@ public class Controller {
         return true;
     }
 
+    /**
+     * We read the dictionary file text
+     * and we add the new word to our String[] fileWords
+     * @param fileWords
+     * @param newWord
+     * @return myWords
+     */
     private String[] addNextWord(String[] fileWords, String newWord) {
         String[] myWords = new String[fileWords.length + 1];
         int i;
@@ -136,6 +148,14 @@ public class Controller {
         return myWords;
     }
 
+    /**
+     * This method verify if the word exists in the dictionary.
+     * If the word exists => true
+     * Otherwise => false
+     * @param dictionary
+     * @param word
+     * @return true/false
+     */
     private boolean wordExist(String[] dictionary, String word) {
         for(int i = 0; i < dictionary.length; i++) {
             if (!word.isEmpty() && dictionary[i].toLowerCase().equals(word.toLowerCase()))
@@ -144,6 +164,10 @@ public class Controller {
         return false;
     }
 
+    /**
+     * Get the english words and put them into String[]
+     * @return fileWords
+     */
     private String[] getEnglishWords() {
         String[] fileWords = new String[0];
         try(BufferedReader br = new BufferedReader(new FileReader("G:\\Informatica\\java workspace\\Comparing PDFS\\src\\resources\\dictionary\\words.txt"))) {
