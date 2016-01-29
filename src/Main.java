@@ -19,7 +19,6 @@ import javax.swing.UIManager;
  * Class for frontend
  */
 public class Main extends JPanel implements ActionListener {
-    static private final String newline = "\n";
     JButton sourceButton;
     JButton targetButton;
     JTextArea log;
@@ -70,10 +69,10 @@ public class Main extends JPanel implements ActionListener {
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
                 controller.setSource(file);
-                log.append("Ready: " + file.getAbsolutePath() + "." + newline + "\nPlease open the target file...");
+                log.append("Ready: " + file.getAbsolutePath() + ".\n"+ "\nPlease open the target file...");
             } else {
                 first = 0;
-                log.append("Open command cancelled by user." + newline);
+                log.append("Open command cancelled by user.\n");
             }
             log.setCaretPosition(log.getDocument().getLength());
 
@@ -82,7 +81,7 @@ public class Main extends JPanel implements ActionListener {
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
                 controller.setTarget(file);
-                log.append("\nReady: " + file.getAbsolutePath() + "." + newline + "----------------------------------------\n");
+                log.append("\nReady: " + file.getAbsolutePath() + ".\n" + "----------------------------------------\n");
                 log.append("\nProcessing files...\nThis will take up to 50 seconds..\n");
                 synchronized (controller) {
                     try {
@@ -95,7 +94,7 @@ public class Main extends JPanel implements ActionListener {
                 first = 0;
                 second = 0;
             } else {
-                log.append("Open command cancelled by user." + newline);
+                log.append("Open command cancelled by user.\n");
                 second = 0;
             }
         }

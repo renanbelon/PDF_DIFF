@@ -1,8 +1,5 @@
 import java.awt.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.LinkedList;
 
 import com.swabunga.spell.engine.SpellDictionaryHashMap;
@@ -121,38 +118,73 @@ public class Controller {
         }
     }
 
+    private boolean isNumber(String s) {
+        try {
+            int number = Integer.parseInt(s);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    private String[] addNextWord(String[] fileWords, String newWord) {
+        String[] myWords = new String[fileWords.length + 1];
+        int i;
+        for(i = 0; i < fileWords.length; i++)
+            myWords[i] = fileWords[i];
+        myWords[i] = newWord;
+        return myWords;
+    }
+
+    private boolean wordExist(String[] dictionary, String word) {
+        for(int i = 0; i < dictionary.length; i++) {
+            if (!word.isEmpty() && dictionary[i].toLowerCase().equals(word.toLowerCase()))
+                return true;
+        }
+        return false;
+    }
+
+    private String[] getEnglishWords() {
+        String[] fileWords = new String[0];
+        try(BufferedReader br = new BufferedReader(new FileReader("G:\\Informatica\\java workspace\\Comparing PDFS\\src\\resources\\dictionary\\words.txt"))) {
+            for(String word; (word = br.readLine()) != null; ) {
+                fileWords = addNextWord(fileWords, word);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return fileWords;
+    }
+
     /**
      * Main function for spell checking
      */
     public void spellChecking() {
         String text;
+        String[] dictionary;
+        String[] words;
         SpellChecking spellChecking = new SpellChecking();
+
         spellChecking.chooseFile();
         this.setSource(spellChecking.getFile());
         text = this.getText(SOURCE_FILE);
-        String[] words = text.split("\\W+");
-        DatabaseWords databaseWords = new DatabaseWords();
-        databaseWords.createTable();
-        databaseWords.createConnection();
-        databaseWords.displayData();
-
-        //processWords(databaseWords, words);
-    }
-
-    /**
-     * Process the words from db
-     *
-     * @param databaseWords
-     * @param words
-     */
-    private void processWords(DatabaseWords databaseWords, String[] words) {
-        for (String word : words) {
-            try {
-                int value = Integer.parseInt(word);
-            } catch (Exception e) {
-                if (databaseWords.searchFor(word) == false)
-                    System.out.println(word + " not found.");
-            }
+        words = text.split("\\s+");
+        for (int i = 0; i < words.length; i++)
+            words[i] = words[i].replaceAll("[^\\w]", "");
+        dictionary = getEnglishWords();
+        FileOutputStream f = null;
+        try {
+            f = new FileOutputStream("output.txt");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
+        PrintStream stdout = System.out;
+        System.setOut(new PrintStream(f));
+        for(int i = 0; i < words.length; i++) {
+            if (!isNumber(words[i]) && !wordExist(dictionary, words[i]))
+                System.out.println(words[i] + " nu exista");
+        }
+        System.setOut(stdout);
+        System.out.println("GATA");
     }
 }
