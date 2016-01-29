@@ -52,6 +52,7 @@ public class Controller {
         PDDocument pdDoc;
         COSDocument cosDoc;
         String text = new String();
+        
         try {
             PDFParser parser;
             if (option == 1)
@@ -144,6 +145,7 @@ public class Controller {
     private String[] addNextWord(String[] fileWords, String newWord) {
         String[] myWords = new String[fileWords.length + 1];
         int i;
+
         for (i = 0; i < fileWords.length; i++)
             myWords[i] = fileWords[i];
         myWords[i] = newWord;
@@ -174,6 +176,7 @@ public class Controller {
      */
     private String[] getEnglishWords() {
         String[] fileWords = new String[0];
+
         try (BufferedReader br = new BufferedReader(new FileReader("G:\\Informatica\\java workspace\\Comparing PDFS\\src\\resources\\dictionary\\words.txt"))) {
             for (String word; (word = br.readLine()) != null; ) {
                 fileWords = addNextWord(fileWords, word);
@@ -201,11 +204,11 @@ public class Controller {
             words[i] = words[i].replaceAll("[^\\w]", "");
         dictionary = getEnglishWords();
         printSpellChecking(dictionary, words);
-
     }
 
     /**
      * This method print the words that are not spelled correctly.
+     *
      * @param dictionary
      * @param words
      */
