@@ -52,7 +52,7 @@ public class Controller {
         PDDocument pdDoc;
         COSDocument cosDoc;
         String text = new String();
-        
+
         try {
             PDFParser parser;
             if (option == 1)
@@ -117,6 +117,20 @@ public class Controller {
             } catch (BadLocationException e) {
             }
         }
+    }
+
+    /**
+     * This method verify if the string is abbreviation.
+     *
+     * @param word
+     * @return true/false
+     */
+    private boolean isAbbreviation(String word) {
+        for (int i = 0; i < word.length(); i++) {
+            if (word.charAt(i) < 'A' || word.charAt(i) > 'Z')
+                return false;
+        }
+        return true;
     }
 
     /**
@@ -223,7 +237,7 @@ public class Controller {
 
         System.setOut(new PrintStream(f));
         for (int i = 0; i < words.length; i++) {
-            if (!isNumber(words[i]) && !wordExist(dictionary, words[i]))
+            if (!isAbbreviation(words[i]) && !isNumber(words[i]) && !wordExist(dictionary, words[i]))
                 System.out.println(words[i] + " does not exists.");
         }
         System.setOut(stdout);
