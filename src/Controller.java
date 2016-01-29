@@ -221,6 +221,21 @@ public class Controller {
     }
 
     /**
+     * This method verify if one word incorrect spelled was printed.
+     *
+     * @param incorrectSpelled
+     * @param word
+     * @return true/false
+     */
+    private boolean wasPrinted(String[] incorrectSpelled, String word) {
+        for(String is : incorrectSpelled) {
+            if(is.toLowerCase().equals(word.toLowerCase()))
+               return true;
+        }
+        return false;
+    }
+
+    /**
      * This method print the words that are not spelled correctly.
      *
      * @param dictionary
@@ -228,6 +243,8 @@ public class Controller {
      */
     private void printSpellChecking(String[] dictionary, String[] words) {
         FileOutputStream f = null;
+        String[] incorrectSpelled = new String[0];
+
         try {
             f = new FileOutputStream("output.txt");
         } catch (FileNotFoundException e) {
@@ -236,9 +253,14 @@ public class Controller {
         PrintStream stdout = System.out;
 
         System.setOut(new PrintStream(f));
-        for (int i = 0; i < words.length; i++) {
-            if (!isAbbreviation(words[i]) && !isNumber(words[i]) && !wordExist(dictionary, words[i]))
-                System.out.println(words[i] + " does not exists.");
+        for (int i = 0, k = 0; i < words.length; i++) {
+            if (!wasPrinted(incorrectSpelled, words[i])) {
+                if (!isAbbreviation(words[i]) && !isNumber(words[i]) && !wordExist(dictionary, words[i]))
+                    System.out.println(words[i] + " does not exists.");
+            } else {
+                incorrectSpelled = addNextWord(incorrectSpelled, words[i]);
+                JOptionPane.showMessageDialog(null,"The word " + words[i] + " doesn't exist");
+            }
         }
         System.setOut(stdout);
         System.out.println("Done");
