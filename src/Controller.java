@@ -120,6 +120,7 @@ public class Controller {
 
     /**
      * This method verifies if a string is number
+     *
      * @param s
      * @return true/false
      */
@@ -135,6 +136,7 @@ public class Controller {
     /**
      * We read the dictionary file text
      * and we add the new word to our String[] fileWords
+     *
      * @param fileWords
      * @param newWord
      * @return myWords
@@ -142,7 +144,7 @@ public class Controller {
     private String[] addNextWord(String[] fileWords, String newWord) {
         String[] myWords = new String[fileWords.length + 1];
         int i;
-        for(i = 0; i < fileWords.length; i++)
+        for (i = 0; i < fileWords.length; i++)
             myWords[i] = fileWords[i];
         myWords[i] = newWord;
         return myWords;
@@ -152,12 +154,13 @@ public class Controller {
      * This method verify if the word exists in the dictionary.
      * If the word exists => true
      * Otherwise => false
+     *
      * @param dictionary
      * @param word
      * @return true/false
      */
     private boolean wordExist(String[] dictionary, String word) {
-        for(int i = 0; i < dictionary.length; i++) {
+        for (int i = 0; i < dictionary.length; i++) {
             if (!word.isEmpty() && dictionary[i].toLowerCase().equals(word.toLowerCase()))
                 return true;
         }
@@ -166,12 +169,13 @@ public class Controller {
 
     /**
      * Get the english words and put them into String[]
+     *
      * @return fileWords
      */
     private String[] getEnglishWords() {
         String[] fileWords = new String[0];
-        try(BufferedReader br = new BufferedReader(new FileReader("G:\\Informatica\\java workspace\\Comparing PDFS\\src\\resources\\dictionary\\words.txt"))) {
-            for(String word; (word = br.readLine()) != null; ) {
+        try (BufferedReader br = new BufferedReader(new FileReader("G:\\Informatica\\java workspace\\Comparing PDFS\\src\\resources\\dictionary\\words.txt"))) {
+            for (String word; (word = br.readLine()) != null; ) {
                 fileWords = addNextWord(fileWords, word);
             }
         } catch (IOException e) {
@@ -196,6 +200,16 @@ public class Controller {
         for (int i = 0; i < words.length; i++)
             words[i] = words[i].replaceAll("[^\\w]", "");
         dictionary = getEnglishWords();
+        printSpellChecking(dictionary, words);
+
+    }
+
+    /**
+     * This method print the words that are not spelled correctly.
+     * @param dictionary
+     * @param words
+     */
+    private void printSpellChecking(String[] dictionary, String[] words) {
         FileOutputStream f = null;
         try {
             f = new FileOutputStream("output.txt");
@@ -203,12 +217,13 @@ public class Controller {
             e.printStackTrace();
         }
         PrintStream stdout = System.out;
+
         System.setOut(new PrintStream(f));
-        for(int i = 0; i < words.length; i++) {
+        for (int i = 0; i < words.length; i++) {
             if (!isNumber(words[i]) && !wordExist(dictionary, words[i]))
-                System.out.println(words[i] + " nu exista");
+                System.out.println(words[i] + " does not exists.");
         }
         System.setOut(stdout);
-        System.out.println("GATA");
+        System.out.println("Done");
     }
 }
