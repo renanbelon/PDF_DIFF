@@ -223,18 +223,44 @@ public class Controller {
     }
 
     /**
+     * this method add to dictionary one word
+     *
+     * @param word
+     */
+    private void addToDictionary(String word) {
+        try {
+            File file = new File("G:\\Informatica\\java workspace\\Comparing PDFS\\src\\resources\\dictionary\\test.txt");
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            FileWriter fw = null;
+            PrintWriter pw = null;
+            try {
+                fw = new FileWriter(file, true);
+                pw = new PrintWriter(fw);
+                pw.write(word + "\n");
+                pw.close();
+                fw.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * This method verify if one word incorrect spelled was printed.
      *
      * @param incorrectSpelled
      * @param word
      * @return true/false
      */
-    private boolean wasPrinted(String[] incorrectSpelled, String word) {
-        for(String is : incorrectSpelled) {
-            if(is.toLowerCase().equals(word.toLowerCase()))
-               return true;
-        }
-        return false;
+    private boolean wasPrinted(HashMap incorrectSpelled, String word) {
+        if (incorrectSpelled.get(word) == null)
+            return false;
+        return true;
     }
 
     /**
@@ -245,8 +271,8 @@ public class Controller {
      */
     private void printSpellChecking(String[] dictionary, String[] words) {
         FileOutputStream f = null;
-        String[] incorrectSpelled = new String[0];
-        HashMap is = new HashMap();
+        HashMap incorrectSpelled = new HashMap();
+        HashMap added = new HashMap();
 
         try {
             f = new FileOutputStream("output.txt");
@@ -256,17 +282,26 @@ public class Controller {
         PrintStream stdout = System.out;
 
         System.setOut(new PrintStream(f));
-        for (int i = 0, k = 0; i < words.length; i++) {
+        for (int i = 0, j = 0, k = 0; i < words.length; i++) {
             if (!wasPrinted(incorrectSpelled, words[i])) {
-                if (!isAbbreviation(words[i]) && !isNumber(words[i]) && !wordExist(dictionary, words[i])) {
+                if (!isAbbreviation(words[i]) && !isNumber(words[i]) &&
+                        !wordExist(dictionary, words[i]) && added.get(words[i]) == null) {
+
                     System.out.println(words[i] + " does not exists.");
-                    is.put(words[i], k);
-                    k++;
-                    incorrectSpelled = addNextWord(incorrectSpelled, words[i]);
+                    int option = JOptionPane.showConfirmDialog(null, words[i] + " doesn't exists.\nDo you want to add this word to dictionary?", "Dictionary", JOptionPane.YES_NO_OPTION);
+                    if (option == 0) {
+                        addToDictionary(words[i]);
+                        added.put(words[i], j++);
+                    } else {
+                        incorrectSpelled.put(words[i], k);
+                        k++;
+                    }
                 }
             }
         }
         System.setOut(stdout);
         System.out.println("Done");
+        System.out.println(added);
+        System.out.println(incorrectSpelled);
     }
 }
