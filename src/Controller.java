@@ -64,7 +64,7 @@ public class Controller {
             pdfStripper = new PDFTextStripper();
             pdDoc = new PDDocument(cosDoc);
             pdfStripper.setStartPage(1);
-            pdfStripper.setEndPage(5);
+            pdfStripper.setEndPage(10);
             text = pdfStripper.getText(pdDoc);
             pdDoc.close();
             cosDoc.close();
@@ -115,6 +115,7 @@ public class Controller {
             try {
                 doc.insertString(doc.getLength(), diff.text, style);
             } catch (BadLocationException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -155,9 +156,7 @@ public class Controller {
      * @return
      */
     private boolean isLink(String word) {
-        if (word.startsWith("www"))
-            return true;
-        return false;
+        return word.startsWith("www");
     }
 
     /**
@@ -201,8 +200,8 @@ public class Controller {
      * @return true/false
      */
     private boolean wordExist(String[] dictionary, String word) {
-        for (int i = 0; i < dictionary.length; i++) {
-            if (!word.isEmpty() && dictionary[i].toLowerCase().equals(word.toLowerCase()))
+        for (String dictionaryWord : dictionary) {
+            if (!word.isEmpty() && dictionaryWord.toLowerCase().equals(word.toLowerCase()))
                 return true;
         }
         return false;
@@ -210,8 +209,7 @@ public class Controller {
 
     private int getOption(String word) {
         System.out.println(word + " does not exists.");
-        int option = JOptionPane.showConfirmDialog(null, word + " doesn't exists.\nDo you want to add this word to dictionary?", "Dictionary", JOptionPane.YES_NO_OPTION);
-        return option;
+        return JOptionPane.showConfirmDialog(null, word + " doesn't exists.\nDo you want to add this word to dictionary?", "Dictionary", JOptionPane.YES_NO_OPTION);
     }
 
     /**
@@ -283,9 +281,7 @@ public class Controller {
      * @return true/false
      */
     private boolean wasPrinted(HashMap incorrectSpelled, String word) {
-        if (incorrectSpelled.get(word) == null)
-            return false;
-        return true;
+        return incorrectSpelled.get(word) != null;
     }
 
     /**
