@@ -1,6 +1,8 @@
 import java.awt.*;
 import java.io.*;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 import com.swabunga.spell.engine.SpellDictionaryHashMap;
 import diff.diff_match_patch;
@@ -244,6 +246,7 @@ public class Controller {
     private void printSpellChecking(String[] dictionary, String[] words) {
         FileOutputStream f = null;
         String[] incorrectSpelled = new String[0];
+        HashMap is = new HashMap();
 
         try {
             f = new FileOutputStream("output.txt");
@@ -255,11 +258,12 @@ public class Controller {
         System.setOut(new PrintStream(f));
         for (int i = 0, k = 0; i < words.length; i++) {
             if (!wasPrinted(incorrectSpelled, words[i])) {
-                if (!isAbbreviation(words[i]) && !isNumber(words[i]) && !wordExist(dictionary, words[i]))
+                if (!isAbbreviation(words[i]) && !isNumber(words[i]) && !wordExist(dictionary, words[i])) {
                     System.out.println(words[i] + " does not exists.");
-            } else {
-                incorrectSpelled = addNextWord(incorrectSpelled, words[i]);
-                JOptionPane.showMessageDialog(null,"The word " + words[i] + " doesn't exist");
+                    is.put(words[i], k);
+                    k++;
+                    incorrectSpelled = addNextWord(incorrectSpelled, words[i]);
+                }
             }
         }
         System.setOut(stdout);
