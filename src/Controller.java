@@ -142,10 +142,22 @@ public class Controller {
      * @return true/false
      */
     private boolean isDeviation(String dictionary[], String word) {
-        for(String s : dictionary) {
-            if (s.length() != 1 && (word.contains(s) || s.contains(word)))
-            return true;
+        for (String s : dictionary) {
+            if (s.length() != 1 && (s.startsWith(word) || s.endsWith(word)))
+                return true;
         }
+        return false;
+    }
+
+
+    /**
+     * this method check if a string is a link
+     * @param word
+     * @return
+     */
+    private boolean isLink(String word) {
+        if (word.startsWith("www"))
+            return true;
         return false;
     }
 
@@ -156,7 +168,7 @@ public class Controller {
      * @return true/false
      */
     private boolean isNumber(String s) {
-        for(int i = 0; i < s.length(); i++)
+        for (int i = 0; i < s.length(); i++)
             if (s.charAt(i) >= '0' && s.charAt(i) <= '9')
                 return true;
         return false;
@@ -213,7 +225,7 @@ public class Controller {
 
         try (BufferedReader br = new BufferedReader(new FileReader("G:\\Informatica\\java workspace\\Comparing PDFS\\src\\resources\\dictionary\\wordscopy.txt"))) {
             for (String word; (word = br.readLine()) != null; ) {
-                fileWords = addNextWord(fileWords, word);
+                fileWords = addNextWord(fileWords, word.toLowerCase());
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -298,9 +310,8 @@ public class Controller {
         System.setOut(new PrintStream(f));
         for (int i = 0, j = 0, k = 0; i < words.length; i++) {
             if (!wasPrinted(incorrectSpelled, words[i])) {
-                if (!isAbbreviation(words[i]) && !isNumber(words[i])
-                        && !wordExist(dictionary, words[i]) && added.get(words[i]) == null
-                        && !isDeviation(dictionary, words[i])) {
+                if (!isAbbreviation(words[i]) && !isNumber(words[i]) && !wordExist(dictionary, words[i]) &&
+                        added.get(words[i].toLowerCase()) == null && !isLink(words[i])) {
 
                     if (getOption(words[i]) == 0) {
                         addToDictionary(words[i]);
@@ -312,8 +323,8 @@ public class Controller {
             }
         }
         System.setOut(stdout);
-        System.out.println("Done");
         System.out.println(added);
         System.out.println(incorrectSpelled);
     }
+
 }
