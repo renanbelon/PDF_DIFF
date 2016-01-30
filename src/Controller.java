@@ -2,9 +2,7 @@ import java.awt.*;
 import java.io.*;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 
-import com.swabunga.spell.engine.SpellDictionaryHashMap;
 import diff.diff_match_patch;
 import org.apache.pdfbox.cos.COSDocument;
 import org.apache.pdfbox.pdfparser.PDFParser;
@@ -78,14 +76,14 @@ public class Controller {
 
     /**
      * Get the text of those pdfs and make a list.
-     * We call smecherie to print the output.
+     * We call displayContent to print the output.
      */
     public void printOutput() {
         String text1 = this.getText(SOURCE_FILE);
         String text2 = this.getText(TARGET_FILE);
         diff_match_patch diffMatchPatch = new diff_match_patch();
         LinkedList<diff_match_patch.Diff> list = diffMatchPatch.diff_main(text1, text2);
-        smecherie(list);
+        displayContent(list);
     }
 
     /**
@@ -94,7 +92,7 @@ public class Controller {
      *
      * @param list
      */
-    public void smecherie(LinkedList<diff_match_patch.Diff> list) {
+    public void displayContent(LinkedList<diff_match_patch.Diff> list) {
         JTextPane display = new JTextPane();
         display.setFont(new Font("Arial Black", 15, 15));
         display.setEditable(false);
@@ -152,6 +150,7 @@ public class Controller {
 
     /**
      * this method check if a string is a link
+     *
      * @param word
      * @return
      */
