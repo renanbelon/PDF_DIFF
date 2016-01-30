@@ -136,18 +136,30 @@ public class Controller {
     }
 
     /**
+     * This method verify if the string is deviation of the word.
+     *
+     * @param word
+     * @return true/false
+     */
+    private boolean isDeviation(String dictionary[], String word) {
+        for(String s : dictionary) {
+            if (s.length() != 1 && (word.contains(s) || s.contains(word)))
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * This method verifies if a string is number
      *
      * @param s
      * @return true/false
      */
     private boolean isNumber(String s) {
-        try {
-            int number = Integer.parseInt(s);
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
+        for(int i = 0; i < s.length(); i++)
+            if (s.charAt(i) >= '0' && s.charAt(i) <= '9')
+                return true;
+        return false;
     }
 
     /**
@@ -185,6 +197,12 @@ public class Controller {
         return false;
     }
 
+    private int getOption(String word) {
+        System.out.println(word + " does not exists.");
+        int option = JOptionPane.showConfirmDialog(null, word + " doesn't exists.\nDo you want to add this word to dictionary?", "Dictionary", JOptionPane.YES_NO_OPTION);
+        return option;
+    }
+
     /**
      * Get the english words and put them into String[]
      *
@@ -193,7 +211,7 @@ public class Controller {
     private String[] getEnglishWords() {
         String[] fileWords = new String[0];
 
-        try (BufferedReader br = new BufferedReader(new FileReader("G:\\Informatica\\java workspace\\Comparing PDFS\\src\\resources\\dictionary\\words.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("G:\\Informatica\\java workspace\\Comparing PDFS\\src\\resources\\dictionary\\wordscopy.txt"))) {
             for (String word; (word = br.readLine()) != null; ) {
                 fileWords = addNextWord(fileWords, word);
             }
@@ -217,7 +235,8 @@ public class Controller {
         text = this.getText(SOURCE_FILE);
         words = text.split("\\s+");
         for (int i = 0; i < words.length; i++)
-            words[i] = words[i].replaceAll("[^\\w]", "");
+            if (!words[i].contains("-") && !words[i].contains("/"))
+                words[i] = words[i].replaceAll("[^\\w]", "");
         dictionary = getEnglishWords();
         printSpellChecking(dictionary, words);
     }
@@ -229,22 +248,17 @@ public class Controller {
      */
     private void addToDictionary(String word) {
         try {
-            File file = new File("G:\\Informatica\\java workspace\\Comparing PDFS\\src\\resources\\dictionary\\test.txt");
+            File file = new File("G:\\Informatica\\java workspace\\Comparing PDFS\\src\\resources\\dictionary\\wordscopy.txt");
             if (!file.exists()) {
                 file.createNewFile();
             }
             FileWriter fw = null;
             PrintWriter pw = null;
-            try {
-                fw = new FileWriter(file, true);
-                pw = new PrintWriter(fw);
-                pw.write(word + "\n");
-                pw.close();
-                fw.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-
+            fw = new FileWriter(file, true);
+            pw = new PrintWriter(fw);
+            pw.write("\n" + word);
+            pw.close();
+            fw.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -284,17 +298,15 @@ public class Controller {
         System.setOut(new PrintStream(f));
         for (int i = 0, j = 0, k = 0; i < words.length; i++) {
             if (!wasPrinted(incorrectSpelled, words[i])) {
-                if (!isAbbreviation(words[i]) && !isNumber(words[i]) &&
-                        !wordExist(dictionary, words[i]) && added.get(words[i]) == null) {
+                if (!isAbbreviation(words[i]) && !isNumber(words[i])
+                        && !wordExist(dictionary, words[i]) && added.get(words[i]) == null
+                        && !isDeviation(dictionary, words[i])) {
 
-                    System.out.println(words[i] + " does not exists.");
-                    int option = JOptionPane.showConfirmDialog(null, words[i] + " doesn't exists.\nDo you want to add this word to dictionary?", "Dictionary", JOptionPane.YES_NO_OPTION);
-                    if (option == 0) {
+                    if (getOption(words[i]) == 0) {
                         addToDictionary(words[i]);
                         added.put(words[i], j++);
                     } else {
-                        incorrectSpelled.put(words[i], k);
-                        k++;
+                        incorrectSpelled.put(words[i], k++);
                     }
                 }
             }
