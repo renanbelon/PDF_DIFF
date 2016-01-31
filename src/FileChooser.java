@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by Covaciu on 20/01/2016.
@@ -34,7 +35,11 @@ public class FileChooser extends Component {
             File selectedFile = fc.getSelectedFile();
             this.setFile(selectedFile);
         } else {
-            chooseFile();
+            try {
+                Main.main(null);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
