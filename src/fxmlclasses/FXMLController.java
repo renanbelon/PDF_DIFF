@@ -149,7 +149,6 @@ public class FXMLController implements Initializable {
 
     @FXML
     public void startFindingDifferences() {
-        //TODO
         if (this.getSourceFile() == null)
             this.setSourceAreaText("YOU DIDN'T SELECT THE SOURCE FILE!!!");
         if (this.getTargetFile() == null)
