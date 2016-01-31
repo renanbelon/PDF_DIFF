@@ -29,7 +29,7 @@ public class ComparePDFS extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            content = FXMLLoader.load(getClass().getResource("/view/design/design.fxml"));
+            content = FXMLLoader.load(getClass().getResource("/resources/fxml/design.fxml"));
             Scene scene = new Scene(content);
             primaryStage.setTitle("Nancy's Dream");
             primaryStage.setScene(scene);

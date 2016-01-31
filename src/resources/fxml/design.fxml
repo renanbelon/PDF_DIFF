@@ -38,12 +38,12 @@
             <Button fx:id="exitButton" layoutX="3.0" layoutY="646.0" mnemonicParsing="false" onMouseClicked="#exit" prefHeight="31.0" prefWidth="238.0" text="Exit" />
             <ImageView fitHeight="228.0" fitWidth="204.0" layoutX="18.0" layoutY="702.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../resources/images/icon.png" />
+                  <Image url="@../images/icon.png" />
                </image>
             </ImageView>
             <ImageView fitHeight="208.0" fitWidth="227.0" layoutX="1.0" layoutY="223.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../resources/images/usa_flag.jpg" />
+                  <Image url="@../images/usa_flag.jpg" />
                </image>
             </ImageView>
             <Text fill="#c616b1" layoutX="11.0" layoutY="553.0" smooth="false" strokeType="OUTSIDE" strokeWidth="0.0" text="The reset button will reset the source and the target file. Press this button if you want to choose other two pdfs." underline="true" wrappingWidth="208.4208984375">
