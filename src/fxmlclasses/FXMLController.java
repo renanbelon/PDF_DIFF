@@ -124,6 +124,7 @@ public class FXMLController implements Initializable {
     }
 
     public void printOutput() {
+        controller = new Controller();
         controller.setSource(this.getSourceFile());
         controller.setTarget(this.getTargetFile());
         String sourceAreaText = controller.getText(1);
@@ -153,12 +154,7 @@ public class FXMLController implements Initializable {
             this.setSourceAreaText("YOU DIDN'T SELECT THE SOURCE FILE!!!");
         if (this.getTargetFile() == null)
             this.setTargetAreaText("YOU DIDN'T SELECT THE TARGET FILE!!!");
-        if (this.getSourceFile() != null && this.getTargetFile() != null) {
-            controller = new Controller();
-            controller.setSource(this.getSourceFile());
-            controller.setTarget(this.getTargetFile());
+        if (this.getSourceFile() != null && this.getTargetFile() != null)
             printOutput();
-        }
-
     }
 }
