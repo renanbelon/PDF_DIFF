@@ -26,8 +26,8 @@ public class Main extends JPanel implements ActionListener {
     JFileChooser fc;
 
     private static int first = 0, second = 0;
-    static Controller controller;
-    static JFrame frame;
+    private static Controller controller;
+    private static JFrame frame;
 
     public Main() {
         super(new BorderLayout());
@@ -38,6 +38,8 @@ public class Main extends JPanel implements ActionListener {
         log.setEditable(false);
         log.setFont(new Font("Arial Black", 12, 12));
         log.append("Please open the source file..\n");
+
+        // log scroll pane
         JScrollPane logScrollPane = new JScrollPane(log);
 
         // Create a file chooser
@@ -95,13 +97,6 @@ public class Main extends JPanel implements ActionListener {
                 controller.setTarget(file);
                 log.append("\nReady: " + file.getAbsolutePath() + ".\n" + "----------------------------------------\n");
                 log.append("\nProcessing files...\nThis will take up to 50 seconds..\n");
-                synchronized (controller) {
-                    try {
-                        controller.wait(50000);
-                    } catch (InterruptedException e1) {
-                        e1.printStackTrace();
-                    }
-                }
                 controller.printOutput();
                 first = 0;
                 second = 0;
