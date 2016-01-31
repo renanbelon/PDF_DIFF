@@ -1,4 +1,4 @@
-package view;
+package fxmlclasses;
 
 import controller.Controller;
 import javafx.application.Application;

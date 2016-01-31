@@ -1,7 +1,5 @@
 //import controller.Controller;
-//import view.ComparePDFS;
-//import controller.Controller;
-//
+//import fxmlclasses.*;
 //import java.awt.*;
 //import java.awt.event.ActionEvent;
 //import java.awt.event.ActionListener;

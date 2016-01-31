@@ -1,13 +1,10 @@
 package controller;
 
-import view.ComparePDFS;
+import fxmlclasses.ComparePDFS;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
 
 /**
  * Created by Covaciu on 20/01/2016.
