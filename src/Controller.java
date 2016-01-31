@@ -2,6 +2,7 @@ import java.awt.*;
 import java.io.*;
 import java.util.HashMap;
 import java.util.LinkedList;
+
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import diff.diff_match_patch;
@@ -9,6 +10,7 @@ import org.apache.pdfbox.cos.COSDocument;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.util.PDFTextStripper;
+
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
@@ -237,6 +239,7 @@ public class Controller {
 
     /**
      * verify if word exists in table
+     *
      * @param table
      * @param word
      * @param i
@@ -252,6 +255,7 @@ public class Controller {
 
     /**
      * split the words and verify every word if exists
+     *
      * @param table
      * @param word
      * @return true/false
@@ -287,6 +291,7 @@ public class Controller {
 
     /**
      * method that prints the output
+     *
      * @param table
      * @param words
      */
@@ -304,8 +309,9 @@ public class Controller {
 
                         if (words[k].startsWith("\"") || words[k].startsWith(".") || words[k].startsWith("'"))
                             words[k] = words[k].substring(1);
-                        if (words[k].endsWith(",") || words[k].endsWith("."))
+                        if (words[k].endsWith(",") || words[k].endsWith(".") || words[k].endsWith(";") || words[k].endsWith(":"))
                             words[k] = words[k].substring(0, words[k].length() - 1);
+
                         if (words[k].contains("-"))
                             if (!verifySplitWords(table, words[k]))
                                 if (!words[k].startsWith("-") && !words[k].endsWith("-") && getOption(words[k]) == 0) {
