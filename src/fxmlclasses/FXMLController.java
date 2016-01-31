@@ -1,15 +1,23 @@
 package fxmlclasses;
 
 import controller.Controller;
+import diff.diff_match_patch;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.text.TextFlow;
 
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
+import java.awt.*;
 import java.io.File;
 import java.net.URL;
+import java.util.LinkedList;
 import java.util.ResourceBundle;
 
 public class FXMLController implements Initializable {
@@ -29,6 +37,7 @@ public class FXMLController implements Initializable {
 
     private File sourceFile;
     private File targetFile;
+    private Controller controller;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -114,6 +123,29 @@ public class FXMLController implements Initializable {
         }
     }
 
+    public void printOutput() {
+        controller.setSource(this.getSourceFile());
+        controller.setTarget(this.getTargetFile());
+        String sourceAreaText = controller.getText(1);
+        String targetAreaText = controller.getText(2);
+        diff_match_patch diffMatchPatch = new diff_match_patch();
+        LinkedList<diff_match_patch.Diff> list = diffMatchPatch.diff_main(sourceAreaText, targetAreaText);
+        for (diff_match_patch.Diff diff : list) {
+            if (diff.operation.compareTo(diff_match_patch.Operation.EQUAL) == 0) {
+                sourceArea.setStyle("-fx-highlight-fill: black; -fx-highlight-text-fill: white; -fx-font-size: 20px;");
+                targetArea.setStyle("-fx-highlight-fill: black; -fx-highlight-text-fill: white; -fx-font-size: 20px;");
+                setSourceAreaText(getSourceAreaText() + diff.text);
+                setTargetAreaText(getTargetAreaText() + diff.text);
+            } else if (diff.operation.compareTo(diff_match_patch.Operation.DELETE) == 0) {
+                sourceArea.setStyle("-fx-highlight-fill: black; -fx-highlight-text-fill: red; -fx-font-size: 20px;");
+                setSourceAreaText(getSourceAreaText() +  diff.text);
+            } else if (diff.operation.compareTo(diff_match_patch.Operation.INSERT) == 0) {
+                targetArea.setStyle("-fx-highlight-fill: black; -fx-highlight-text-fill: green; -fx-font-size: 20px;");
+                setTargetAreaText(getTargetAreaText() + diff.text);
+            }
+        }
+    }
+
     @FXML
     public void startFindingDifferences() {
         //TODO
@@ -122,11 +154,10 @@ public class FXMLController implements Initializable {
         if (this.getTargetFile() == null)
             this.setTargetAreaText("YOU DIDN'T SELECT THE TARGET FILE!!!");
         if (this.getSourceFile() != null && this.getTargetFile() != null) {
-            Controller controller = new Controller();
+            controller = new Controller();
             controller.setSource(this.getSourceFile());
             controller.setTarget(this.getTargetFile());
-            this.setSourceAreaText(controller.getText(1));
-            this.setTargetAreaText(controller.getText(2));
+            printOutput();
         }
 
     }
