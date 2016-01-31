@@ -207,49 +207,6 @@ public class Controller {
         return false;
     }
 
-    private int getOption(String word) {
-        System.out.println(word + " does not exists.");
-        return JOptionPane.showConfirmDialog(null, word + " doesn't exists.\nDo you want to add this word to dictionary?", "Dictionary", JOptionPane.YES_NO_OPTION);
-    }
-
-    /**
-     * Get the english words and put them into String[]
-     *
-     * @return fileWords
-     */
-    private String[] getEnglishWords() {
-        String[] fileWords = new String[0];
-
-        try (BufferedReader br = new BufferedReader(new FileReader("G:\\Informatica\\java workspace\\Comparing PDFS\\src\\resources\\dictionary\\wordscopy.txt"))) {
-            for (String word; (word = br.readLine()) != null; ) {
-                fileWords = addNextWord(fileWords, word.toLowerCase());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return fileWords;
-    }
-
-    /**
-     * Main function for spell checking
-     */
-    public void spellChecking() {
-        String text;
-        String[] dictionary;
-        String[] words;
-        SpellChecking spellChecking = new SpellChecking();
-
-        spellChecking.chooseFile();
-        this.setSource(spellChecking.getFile());
-        text = this.getText(SOURCE_FILE);
-        words = text.split("\\s+");
-        for (int i = 0; i < words.length; i++)
-            if (!words[i].contains("-") && !words[i].contains("/"))
-                words[i] = words[i].replaceAll("[^\\w]", "");
-        dictionary = getEnglishWords();
-        printSpellChecking(dictionary, words);
-    }
-
     /**
      * this method add to dictionary one word
      *
@@ -285,6 +242,72 @@ public class Controller {
     }
 
     /**
+     * this method returns the option of the user
+     * if he want to add the word to dictionary or not
+     *
+     * @param word
+     * @return 0/1
+     */
+    private int getOption(String word) {
+        System.out.println(word + " does not exists.");
+        return JOptionPane.showConfirmDialog(null, word + " doesn't exists.\nDo you want to add this word to dictionary?", "Dictionary", JOptionPane.YES_NO_OPTION);
+    }
+
+    /**
+     * Get the english words and put them into String[]
+     *
+     * @return fileWords
+     */
+    private String[] getEnglishWords() {
+        String[] fileWords = new String[0];
+
+        try (BufferedReader br = new BufferedReader(new FileReader("G:\\Informatica\\java workspace\\Comparing PDFS\\src\\resources\\dictionary\\wordscopy.txt"))) {
+            for (String word; (word = br.readLine()) != null; ) {
+                fileWords = addNextWord(fileWords, word.toLowerCase());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return fileWords;
+    }
+
+    /**
+     * check if words between separator exists
+     * @param dictionary
+     * @param string
+     * @return
+     */
+    private boolean correctWordsFrom(String[] dictionary, String string) {
+        String[] words = string.split("-");
+        for(String word : words) {
+            for(String dic : dictionary)
+                if (dic.toLowerCase().equals(word.toLowerCase()))
+                    return true;
+        }
+        return false;
+    }
+
+    /**
+     * Main function for spell checking
+     */
+    public void spellChecking() {
+        String text;
+        String[] dictionary;
+        String[] words;
+        FileChooser fileChooser = new FileChooser();
+
+        fileChooser.chooseFile();
+        this.setSource(fileChooser.getFile());
+        text = this.getText(SOURCE_FILE);
+        words = text.split("\\s+");
+        for (int i = 0; i < words.length; i++)
+            if (!words[i].contains("-") && !words[i].contains("/"))
+                words[i] = words[i].replaceAll("[^\\w]", "");
+        dictionary = getEnglishWords();
+        printSpellChecking(dictionary, words);
+    }
+
+    /**
      * This method print the words that are not spelled correctly.
      *
      * @param dictionary
@@ -307,13 +330,14 @@ public class Controller {
             if (!wasPrinted(incorrectSpelled, words[i])) {
                 if (!isAbbreviation(words[i]) && !isNumber(words[i]) && !wordExist(dictionary, words[i]) &&
                         added.get(words[i].toLowerCase()) == null && !isLink(words[i])) {
-
-                    if (getOption(words[i]) == 0) {
-                        addToDictionary(words[i]);
-                        added.put(words[i], j++);
-                    } else {
-                        incorrectSpelled.put(words[i], k++);
-                    }
+                    if (words[i].contains("-"))
+                        if (!correctWordsFrom(dictionary, words[i]))
+                            if (!words[i].startsWith("-") && !words[i].endsWith("-") && getOption(words[i]) == 0) {
+                                addToDictionary(words[i]);
+                                added.put(words[i], j++);
+                            } else {
+                                incorrectSpelled.put(words[i], k++);
+                            }
                 }
             }
         }

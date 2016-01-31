@@ -7,15 +7,15 @@ import java.io.File;
 /**
  * Created by Covaciu on 20/01/2016.
  */
-public class SpellChecking extends Component {
+public class FileChooser extends Component {
     private File file;
     JFileChooser fc;
 
-    public SpellChecking() {
+    public FileChooser() {
 
     }
 
-    public SpellChecking(File file) {
+    public FileChooser(File file) {
         this.setFile(file);
     }
 
