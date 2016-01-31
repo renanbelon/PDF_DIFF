@@ -2,7 +2,6 @@ import java.awt.*;
 import java.io.*;
 import java.util.HashMap;
 import java.util.LinkedList;
-
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import diff.diff_match_patch;
@@ -10,7 +9,6 @@ import org.apache.pdfbox.cos.COSDocument;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.util.PDFTextStripper;
-
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
@@ -137,21 +135,6 @@ public class Controller {
     }
 
     /**
-     * This method verify if the string is deviation of the word.
-     *
-     * @param word
-     * @return true/false
-     */
-    private boolean isDeviation(String dictionary[], String word) {
-        for (String s : dictionary) {
-            if (s.length() != 1 && (s.startsWith(word) || s.endsWith(word)))
-                return true;
-        }
-        return false;
-    }
-
-
-    /**
      * this method check if a string is a link
      *
      * @param word
@@ -182,41 +165,6 @@ public class Controller {
      */
     private boolean isName(String word) {
         return (!word.isEmpty() && (word.charAt(0) >= 'A' && word.charAt(0) <= 'Z'));
-    }
-
-    /**
-     * We read the dictionary file text
-     * and we add the new word to our String[] fileWords
-     *
-     * @param fileWords
-     * @param newWord
-     * @return myWords
-     */
-    private String[] addNextWord(String[] fileWords, String newWord) {
-        String[] myWords = new String[fileWords.length + 1];
-        int i;
-
-        for (i = 0; i < fileWords.length; i++)
-            myWords[i] = fileWords[i];
-        myWords[i] = newWord;
-        return myWords;
-    }
-
-    /**
-     * This method verify if the word exists in the dictionary.
-     * If the word exists => true
-     * Otherwise => false
-     *
-     * @param dictionary
-     * @param word
-     * @return true/false
-     */
-    private boolean wordExist(String[] dictionary, String word) {
-        for (String dictionaryWord : dictionary) {
-            if (!word.isEmpty() && dictionaryWord.toLowerCase().equals(word.toLowerCase()))
-                return true;
-        }
-        return false;
     }
 
     /**
@@ -267,6 +215,7 @@ public class Controller {
 
     /**
      * method that put english words in table
+     *
      * @return
      */
     private Table<Integer, Integer, String> tableWords() {
@@ -274,51 +223,44 @@ public class Controller {
         try {
             BufferedReader br = new BufferedReader(new FileReader("G:\\Informatica\\java workspace\\Comparing PDFS\\src\\resources\\dictionary\\wordscopy.txt"));
             int i = 0;
-            for(String word; (word = br.readLine()) != null; ) {
+            for (String word; (word = br.readLine()) != null; ) {
                 if (word.charAt(0) >= 'a' && word.charAt(0) <= 'z')
-                    i = word.charAt(0) - 96;
-                else i = word.charAt(0) - 64;
+                    i = word.charAt(0) - 97;
+                else i = word.charAt(0) - 65;
                 table.put(i, table.row(i).size() + 1, word);
-                System.out.println(table.get(i, table.row(i).size()));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return table;
     }
-    /**
-     * Get the english words and put them into String[]
-     *
-     * @return fileWords
-     */
-    private String[] getEnglishWords() {
-        String[] fileWords = new String[0];
 
-        try (BufferedReader br = new BufferedReader(new FileReader("G:\\Informatica\\java workspace\\Comparing PDFS\\src\\resources\\dictionary\\wordscopy.txt"))) {
-            for (String word; (word = br.readLine()) != null; ) {
-                fileWords = addNextWord(fileWords, word.toLowerCase());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+    /**
+     * verify if word exists in table
+     * @param table
+     * @param word
+     * @param i
+     * @return true/false
+     */
+    private boolean verifyInTable(Table<Integer, Integer, String> table, String word, int i) {
+        for (int j = 0; j < table.row(i).size(); j++) {
+            if (table.get(i, j + 1).toLowerCase().equals(word.toLowerCase()))
+                return true;
         }
-        return fileWords;
+        return false;
     }
 
     /**
-     * check if words between separator exists
-     *
-     * @param dictionary
-     * @param string
-     * @return
+     * split the words and verify every word if exists
+     * @param table
+     * @param word
+     * @return true/false
      */
-    private boolean correctWordsFrom(String[] dictionary, String string) {
-        String[] words = string.split("-");
-        for (String word : words) {
-            int ok = 1;
-            for (int i = 0; i < dictionary.length && ok == 1; i++)
-                if (dictionary[i].toLowerCase().equals(word.toLowerCase()))
-                    ok = 0;
-            if (ok == 1)
+    private boolean verifySplitWords(Table<Integer, Integer, String> table, String word) {
+        String[] words = word.split("-");
+        for (String x : words) {
+            int i = x.charAt(0) >= 'a' && x.charAt(0) <= 'z' ? x.charAt(0) - 97 : x.charAt(0) - 65;
+            if (!verifyInTable(table, x, i))
                 return false;
         }
         return true;
@@ -329,7 +271,6 @@ public class Controller {
      */
     public void spellChecking() {
         String text;
-        String[] dictionary;
         String[] words;
         FileChooser fileChooser = new FileChooser();
 
@@ -340,33 +281,40 @@ public class Controller {
         for (int i = 0; i < words.length; i++)
             if (!words[i].contains("-") && !words[i].contains("/"))
                 words[i] = words[i].replaceAll("[^\\w]", "");
-     //   dictionary = getEnglishWords();
-      //  printSpellChecking(dictionary, words);
-        tableWords();
+        Table<Integer, Integer, String> table = tableWords();
+        printSpellChecking(table, words);
     }
 
     /**
-     * This method print the words that are not spelled correctly.
-     *
-     * @param dictionary
+     * method that prints the output
+     * @param table
      * @param words
      */
-    private void printSpellChecking(String[] dictionary, String[] words) {
+    private void printSpellChecking(Table<Integer, Integer, String> table, String[] words) {
         HashMap incorrectSpelled = new HashMap();
         HashMap added = new HashMap();
+        int add = 0, incorrect = 0;
 
-        for (int i = 0, j = 0, k = 0; i < words.length; i++) {
-            if (!wasPrinted(incorrectSpelled, words[i])) {
-                if (!isName(words[i]) && !isAbbreviation(words[i]) && !isNumber(words[i]) && !wordExist(dictionary, words[i]) &&
-                        added.get(words[i].toLowerCase()) == null && !isLink(words[i])) {
-                    if (words[i].contains("-"))
-                        if (!correctWordsFrom(dictionary, words[i]))
-                            if (!words[i].startsWith("-") && !words[i].endsWith("-") && getOption(words[i]) == 0) {
-                                addToDictionary(words[i]);
-                                added.put(words[i], j++);
-                            } else {
-                                incorrectSpelled.put(words[i], k++);
-                            }
+        for (int k = 0; k < words.length; k++) {
+            if (!words[k].isEmpty()) {
+                int i = words[k].charAt(0) >= 'a' && words[k].charAt(0) <= 'z' ? words[k].charAt(0) - 97 : words[k].charAt(0) - 65;
+                if (!wasPrinted(incorrectSpelled, words[k])) {
+                    if (!isName(words[k]) && !isAbbreviation(words[k]) && !isNumber(words[k]) && !verifyInTable(table, words[k], i) &&
+                            added.get(words[k].toLowerCase()) == null && !isLink(words[k])) {
+
+                        if (words[k].startsWith("\"") || words[k].startsWith(".") || words[k].startsWith("'"))
+                            words[k] = words[k].substring(1);
+                        if (words[k].endsWith(",") || words[k].endsWith("."))
+                            words[k] = words[k].substring(0, words[k].length() - 1);
+                        if (words[k].contains("-"))
+                            if (!verifySplitWords(table, words[k]))
+                                if (!words[k].startsWith("-") && !words[k].endsWith("-") && getOption(words[k]) == 0) {
+                                    addToDictionary(words[k]);
+                                    added.put(words[k], add++);
+                                } else {
+                                    incorrectSpelled.put(words[k], incorrect++);
+                                }
+                    }
                 }
             }
         }
