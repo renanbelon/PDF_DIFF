@@ -1,3 +1,5 @@
+import view.ComparePDFS;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -139,7 +141,8 @@ public class Main extends JPanel implements ActionListener {
             SwingUtilities.invokeLater(() -> {
                 // Turn off metal's use of bold fonts
                 UIManager.put("swing.boldMetal", Boolean.FALSE);
-                createAndShowGUI();
+                //createAndShowGUI();
+                ComparePDFS.main(args);
             });
         } else if (value == 1)
             controller.spellChecking();
