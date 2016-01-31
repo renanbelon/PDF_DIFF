@@ -4,6 +4,7 @@
       <root url="jar://$PROJECT_DIR$/pdfbox-app-1.8.10.jar!/" />
       <root url="jar://$PROJECT_DIR$/apache-logging-log4j.jar!/" />
       <root url="jar://$PROJECT_DIR$/google-api-spelling-java-1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/guava-18.0.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
