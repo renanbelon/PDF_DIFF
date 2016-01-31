@@ -1,9 +1,11 @@
 package fxmlclasses;
 
+import controller.Controller;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 
 import javax.swing.*;
 import java.io.File;
@@ -13,6 +15,10 @@ import java.util.ResourceBundle;
 public class FXMLController implements Initializable {
 
     @FXML
+    private TextArea sourceArea;
+    @FXML
+    private TextArea targetArea;
+    @FXML
     private Button sourceButton;
     @FXML
     private Button targetButton;
@@ -20,10 +26,6 @@ public class FXMLController implements Initializable {
     private Button resetButton;
     @FXML
     private Button exitButton;
-    @FXML
-    private Label sourcePane;
-    @FXML
-    private Label targetPane;
 
     private File sourceFile;
     private File targetFile;
@@ -34,25 +36,27 @@ public class FXMLController implements Initializable {
         targetButton.setText("Select target file");
         resetButton.setText("Reset");
         exitButton.setText("Exit");
-        setSourcePaneText("Initialize source pane");
-        setTargetPaneText("Initialize target pane");
+        sourceArea.setEditable(false);
+        targetArea.setEditable(false);
+        setSourceAreaText("Please select source file!");
+        setTargetAreaText("Please select target file!");
         reset();
     }
 
-    public void setSourcePaneText(String text) {
-        sourcePane.setText(text);
+    public void setSourceAreaText(String text) {
+        sourceArea.setText(text);
     }
 
-    public String getSourcePaneText() {
-        return sourcePane.getText();
+    public String getSourceAreaText() {
+        return sourceArea.getText();
     }
 
-    public void setTargetPaneText(String text) {
-        targetPane.setText(text);
+    public void setTargetAreaText(String text) {
+        targetArea.setText(text);
     }
 
-    public String getTargetPaneText() {
-        return targetPane.getText();
+    public String getTargetAreaText() {
+        return targetArea.getText();
     }
 
     public void setSourceFile(File sourceFile) {
@@ -75,8 +79,8 @@ public class FXMLController implements Initializable {
     public void reset() {
         this.setSourceFile(null);
         this.setTargetFile(null);
-        this.setSourcePaneText("Please select source file!");
-        this.setTargetPaneText("Please select target file!");
+        this.setSourceAreaText("Please select source file!");
+        this.setTargetAreaText("Please select target file!");
     }
 
     @FXML
@@ -91,7 +95,7 @@ public class FXMLController implements Initializable {
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fc.getSelectedFile();
             this.setSourceFile(selectedFile);
-            this.setSourcePaneText("");
+            this.setSourceAreaText("");
         } else {
             this.setSourceFile(null);
         }
@@ -104,7 +108,7 @@ public class FXMLController implements Initializable {
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fc.getSelectedFile();
             this.setTargetFile(selectedFile);
-            this.setTargetPaneText("");
+            this.setTargetAreaText("");
         } else {
             this.setTargetFile(null);
         }
@@ -114,12 +118,16 @@ public class FXMLController implements Initializable {
     public void startFindingDifferences() {
         //TODO
         if (this.getSourceFile() == null)
-            this.setSourcePaneText("YOU DIDN'T SELECT THE SOURCE FILE!!!");
+            this.setSourceAreaText("YOU DIDN'T SELECT THE SOURCE FILE!!!");
         if (this.getTargetFile() == null)
-            this.setTargetPaneText("YOU DIDN'T SELECT THE TARGET FILE!!!");
+            this.setTargetAreaText("YOU DIDN'T SELECT THE TARGET FILE!!!");
         if (this.getSourceFile() != null && this.getTargetFile() != null) {
-            this.setSourcePaneText(this.getSourceFile().getAbsolutePath());
-            this.setTargetPaneText(this.getTargetFile().getAbsolutePath());
+            Controller controller = new Controller();
+            controller.setSource(this.getSourceFile());
+            controller.setTarget(this.getTargetFile());
+            this.setSourceAreaText(controller.getText(1));
+            this.setTargetAreaText(controller.getText(2));
         }
+
     }
 }
