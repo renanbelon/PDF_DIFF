@@ -1,3 +1,7 @@
+package controller;
+
+import view.ComparePDFS;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -29,12 +33,7 @@ public class FileChooser extends Component {
             File selectedFile = fc.getSelectedFile();
             this.setFile(selectedFile);
         } else {
-            try {
-                Main.main(null);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            ComparePDFS.main(null);
         }
     }
-
 }
