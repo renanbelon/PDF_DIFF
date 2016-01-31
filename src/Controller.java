@@ -299,6 +299,7 @@ public class Controller {
         HashMap incorrectSpelled = new HashMap();
         HashMap added = new HashMap();
         int add = 0, incorrect = 0;
+        boolean wasPrintedSmth = false;
 
         for (int k = 0; k < words.length; k++) {
             if (!words[k].isEmpty()) {
@@ -317,13 +318,17 @@ public class Controller {
                                 if (!words[k].startsWith("-") && !words[k].endsWith("-") && getOption(words[k]) == 0) {
                                     addToDictionary(words[k]);
                                     added.put(words[k], add++);
+                                    wasPrintedSmth = true;
                                 } else {
                                     incorrectSpelled.put(words[k], incorrect++);
+                                    wasPrintedSmth = true;
                                 }
                     }
                 }
             }
         }
+        if (!wasPrintedSmth)
+            JOptionPane.showMessageDialog(null, "Nancy, chill!\nAll words are spelled correctly!", "Spell Checking", JOptionPane.INFORMATION_MESSAGE);
         System.out.println(added);
         System.out.println(incorrectSpelled);
     }
