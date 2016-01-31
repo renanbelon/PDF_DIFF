@@ -12,13 +12,7 @@ public class FileChooser extends Component {
     private File file;
     JFileChooser fc;
 
-    public FileChooser() {
-
-    }
-
-    public FileChooser(File file) {
-        this.setFile(file);
-    }
+    public FileChooser() {}
 
     public void setFile(File file) {
         this.file = file;

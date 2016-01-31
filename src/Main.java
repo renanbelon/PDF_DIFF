@@ -21,10 +21,13 @@ import javax.swing.UIManager;
 public class Main extends JPanel implements ActionListener {
     JButton sourceButton;
     JButton targetButton;
+    JButton backButton;
     JTextArea log;
     JFileChooser fc;
+
     private static int first = 0, second = 0;
     static Controller controller;
+    static JFrame frame;
 
     public Main() {
         super(new BorderLayout());
@@ -45,6 +48,8 @@ public class Main extends JPanel implements ActionListener {
         sourceButton.addActionListener(this);
         targetButton = new JButton("Target file..");
         targetButton.addActionListener(this);
+        backButton = new JButton("Back");
+        backButton.addActionListener(this);
 
         // For layout purposes, put the buttons in a separate panel
         JPanel buttonPanel = new JPanel(); // use FlowLayout
@@ -54,6 +59,7 @@ public class Main extends JPanel implements ActionListener {
         // Add the buttons and the log to this panel.
         add(buttonPanel, BorderLayout.PAGE_START);
         add(logScrollPane, BorderLayout.CENTER);
+        add(backButton, BorderLayout.SOUTH);
     }
 
     /**
@@ -62,14 +68,20 @@ public class Main extends JPanel implements ActionListener {
      * @param e
      */
     public void actionPerformed(ActionEvent e) {
-
-        if (e.getSource() == sourceButton && first == 0) {
+        if (e.getSource() == backButton) {
+            try {
+                frame.dispose();
+                Main.main(null);
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        } else if (e.getSource() == sourceButton && first == 0) {
             int returnVal = fc.showOpenDialog(Main.this);
             first = 1;
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
                 controller.setSource(file);
-                log.append("Ready: " + file.getAbsolutePath() + ".\n"+ "\nPlease open the target file...");
+                log.append("Ready: " + file.getAbsolutePath() + ".\n" + "\nPlease open the target file...");
             } else {
                 first = 0;
                 log.append("Open command cancelled by user.\n");
@@ -104,7 +116,7 @@ public class Main extends JPanel implements ActionListener {
      * Create and set up the main window
      */
     private static void createAndShowGUI() {
-        JFrame frame = new JFrame("NANCY'S DREAM :D");
+        frame = new JFrame("NANCY'S DREAM :D");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         // Add content to the window.
         frame.add(new Main());
