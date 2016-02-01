@@ -123,6 +123,9 @@ public class FXMLController implements Initializable {
         }
     }
 
+    /**
+     * THIS METHOD IS NOT FUCKING WORKING WHAT THE FUCK !!!!!!!!!!!!!!!!!!!!!!!!!
+     */
     public void printOutput() {
         controller = new Controller();
         controller.setSource(this.getSourceFile());
@@ -139,7 +142,7 @@ public class FXMLController implements Initializable {
                 setTargetAreaText(getTargetAreaText() + diff.text);
             } else if (diff.operation.compareTo(diff_match_patch.Operation.DELETE) == 0) {
                 sourceArea.setStyle("-fx-highlight-fill: black; -fx-highlight-text-fill: red; -fx-font-size: 20px;");
-                setSourceAreaText(getSourceAreaText() +  diff.text);
+                setSourceAreaText(getSourceAreaText() + diff.text);
             } else if (diff.operation.compareTo(diff_match_patch.Operation.INSERT) == 0) {
                 targetArea.setStyle("-fx-highlight-fill: black; -fx-highlight-text-fill: green; -fx-font-size: 20px;");
                 setTargetAreaText(getTargetAreaText() + diff.text);
