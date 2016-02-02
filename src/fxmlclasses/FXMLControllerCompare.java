@@ -20,7 +20,7 @@ import java.net.URL;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 
-public class FXMLController implements Initializable {
+public class FXMLControllerCompare implements Initializable {
 
     @FXML
     private TextArea sourceArea;
