@@ -19,12 +19,6 @@ public class ComparePDFS extends Application {
         value = JOptionPane.showOptionDialog(null, "Choose the option you want to use", "PDF",
                 JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null,
                 new Object[]{"Compare PDFS", "Spell checking"}, null);
-//        Controller controller = new Controller();
-//        if (value == 0)
-//            launch(args);
-//        else if (value == 1) {
-//            //controller.spellChecking();
-//        }
         launch(args);
     }
 
