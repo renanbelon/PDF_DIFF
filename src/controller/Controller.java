@@ -222,7 +222,7 @@ public class Controller {
      *
      * @return
      */
-    private Table<Integer, Integer, String> tableWords() {
+    public Table<Integer, Integer, String> tableWords() {
         Table<Integer, Integer, String> table = HashBasedTable.create();
         try {
             BufferedReader br = new BufferedReader(new FileReader("G:\\Informatica\\java workspace\\Comparing PDFS\\src\\resources\\dictionary\\wordscopy.txt"));
@@ -297,7 +297,7 @@ public class Controller {
      * @param table
      * @param words
      */
-    private void printSpellChecking(Table<Integer, Integer, String> table, String[] words) {
+    public void printSpellChecking(Table<Integer, Integer, String> table, String[] words) {
         HashMap incorrectSpelled = new HashMap();
         HashMap added = new HashMap();
         int add = 0, incorrect = 0;

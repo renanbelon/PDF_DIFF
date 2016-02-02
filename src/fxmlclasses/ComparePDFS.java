@@ -13,23 +13,28 @@ import java.io.IOException;
 public class ComparePDFS extends Application {
 
     private static Parent content;
+    private static int value;
 
     public static void main(String[] args) {
-        int value = JOptionPane.showOptionDialog(null, "Choose the option you want to use", "PDF",
+        value = JOptionPane.showOptionDialog(null, "Choose the option you want to use", "PDF",
                 JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null,
                 new Object[]{"Compare PDFS", "Spell checking"}, null);
-        Controller controller = new Controller();
-        if (value == 0)
-            launch(args);
-        else if (value == 1)
-            controller.spellChecking();
-
+//        Controller controller = new Controller();
+//        if (value == 0)
+//            launch(args);
+//        else if (value == 1) {
+//            //controller.spellChecking();
+//        }
+        launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) {
         try {
-            content = FXMLLoader.load(getClass().getResource("/resources/fxml/design.fxml"));
+            if (value == 0)
+                content = FXMLLoader.load(getClass().getResource("/resources/fxml/design.fxml"));
+            else if (value == 1)
+                content = FXMLLoader.load(getClass().getResource("/resources/fxml/spellCheckingDesign.fxml"));
             Scene scene = new Scene(content);
             primaryStage.setTitle("Nancy's Dream");
             primaryStage.setScene(scene);

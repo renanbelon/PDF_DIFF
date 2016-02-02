@@ -5,6 +5,8 @@
 
 package fxmlclasses;
 
+import com.google.common.collect.Table;
+import controller.Controller;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -73,6 +75,18 @@ public class FXMLControllerSpellChecking implements Initializable {
 
     @FXML
     public void startSpellChecking() {
+        Controller controller = new Controller();
+        String text;
+        String[] words;
 
+        controller.setSource(spellFile);
+        text = controller.getText(1);
+        textArea.setText(text);
+        words = text.split("\\s+");
+        for (int i = 0; i < words.length; i++)
+            if (!words[i].contains("-") && !words[i].contains("/"))
+                words[i] = words[i].replaceAll("[^\\w]", "");
+        Table<Integer, Integer, String> table = controller.tableWords();
+        controller.printSpellChecking(table, words);
     }
 }
