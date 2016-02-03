@@ -125,20 +125,6 @@ public class Controller {
     }
 
     /**
-     * This method verify if the string is abbreviation.
-     *
-     * @param word
-     * @return true/false
-     */
-    private boolean isAbbreviation(String word) {
-        for (int i = 0; i < word.length(); i++) {
-            if (word.charAt(i) < 'A' || word.charAt(i) > 'Z')
-                return false;
-        }
-        return true;
-    }
-
-    /**
      * this method check if a string is a link
      *
      * @param word
@@ -164,11 +150,17 @@ public class Controller {
     /**
      * check if a word is name
      *
+     *
+     * @param tableNames
      * @param word
+     * @param i
      * @return true/false
      */
-    private boolean isName(String word) {
-        return (!word.isEmpty() && (word.charAt(0) >= 'A' && word.charAt(0) <= 'Z'));
+    private boolean isName(Table<Integer, Integer, String> tableNames, String word, int i) {
+        if (!word.isEmpty()) {
+
+        }
+        return false;
     }
 
     /**
@@ -239,6 +231,26 @@ public class Controller {
         return table;
     }
 
+    public Table<Integer, Integer, String> tableNames() {
+        Table<Integer, Integer, String> table = HashBasedTable.create();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("G:\\Informatica\\java workspace\\Comparing PDFS\\src\\resources\\names\\all.txt"));
+            int i = 0;
+            for (String word; (word = br.readLine()) != null; ) {
+                if (!isNumber(word)) {
+                    if (word.charAt(0) >= 'a' && word.charAt(0) <= 'z')
+                        i = word.charAt(0) - 97;
+                    else i = word.charAt(0) - 65;
+                    table.put(i, table.row(i).size() + 1, word);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return table;
+    }
+
+
     /**
      * verify if word exists in table
      *
@@ -264,6 +276,12 @@ public class Controller {
      */
     private boolean verifySplitWords(Table<Integer, Integer, String> table, String word) {
         String[] words = word.split("-");
+        for (String x : words) {
+            int i = x.charAt(0) >= 'a' && x.charAt(0) <= 'z' ? x.charAt(0) - 97 : x.charAt(0) - 65;
+            if (!verifyInTable(table, x, i))
+                return false;
+        }
+        words = word.split("/");
         for (String x : words) {
             int i = x.charAt(0) >= 'a' && x.charAt(0) <= 'z' ? x.charAt(0) - 97 : x.charAt(0) - 65;
             if (!verifyInTable(table, x, i))
@@ -300,6 +318,7 @@ public class Controller {
     public void printSpellChecking(Table<Integer, Integer, String> table, String[] words) {
         HashMap incorrectSpelled = new HashMap();
         HashMap added = new HashMap();
+        Table<Integer, Integer, String> tableNames = tableNames();
         int add = 0, incorrect = 0;
         boolean wasPrintedSmth = false;
 
@@ -307,7 +326,7 @@ public class Controller {
             if (!words[k].isEmpty()) {
                 int i = words[k].charAt(0) >= 'a' && words[k].charAt(0) <= 'z' ? words[k].charAt(0) - 97 : words[k].charAt(0) - 65;
                 if (!wasPrinted(incorrectSpelled, words[k])) {
-                    if (!isName(words[k]) && !isAbbreviation(words[k]) && !isNumber(words[k]) && !verifyInTable(table, words[k], i) &&
+                    if (!isName(tableNames, words[k], i) && !isNumber(words[k]) && !verifyInTable(table, words[k], i) &&
                             added.get(words[k].toLowerCase()) == null && !isLink(words[k])) {
 
                         if (words[k].startsWith("\"") || words[k].startsWith(".") || words[k].startsWith("'"))
@@ -315,7 +334,7 @@ public class Controller {
                         if (words[k].endsWith(",") || words[k].endsWith(".") || words[k].endsWith(";") || words[k].endsWith(":"))
                             words[k] = words[k].substring(0, words[k].length() - 1);
 
-                        if (words[k].contains("-"))
+                        if (words[k].contains("-") || words[k].contains("/"))
                             if (!verifySplitWords(table, words[k]))
                                 if (!words[k].startsWith("-") && !words[k].endsWith("-") && getOption(words[k]) == 0) {
                                     addToDictionary(words[k]);
