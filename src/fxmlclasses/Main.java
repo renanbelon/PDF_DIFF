@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 import javax.swing.*;
 import java.io.IOException;
 
-public class ComparePDFS extends Application {
+public class Main extends Application {
 
     private static Parent content;
     private static int value;

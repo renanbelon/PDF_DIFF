@@ -1,6 +1,6 @@
 package controller;
 
-import fxmlclasses.ComparePDFS;
+import fxmlclasses.Main;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,7 +30,7 @@ public class FileChooser extends Component {
             File selectedFile = fc.getSelectedFile();
             this.setFile(selectedFile);
         } else {
-            ComparePDFS.main(null);
+            Main.main(null);
         }
     }
 }

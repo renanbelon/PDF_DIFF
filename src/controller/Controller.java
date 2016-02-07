@@ -27,6 +27,9 @@ public class Controller {
     private File target;
     private final int SOURCE_FILE = 1;
     private final int TARGET_FILE = 2;
+    HashMap incorrectSpelled;
+    HashMap added;
+    int add = 0, incorrect = 0;
 
     public File getSource() {
         return this.source;
@@ -131,7 +134,7 @@ public class Controller {
      * @return
      */
     private boolean isLink(String word) {
-        return word.startsWith("www");
+        return word.startsWith("www") || word.startsWith("http") || word.startsWith("https");
     }
 
     /**
@@ -149,7 +152,6 @@ public class Controller {
 
     /**
      * check if a word is name
-     *
      *
      * @param tableNames
      * @param word
@@ -191,14 +193,14 @@ public class Controller {
     }
 
     /**
-     * This method verify if one word incorrect spelled was printed.
+     * This method verify if one word was printed.
      *
-     * @param incorrectSpelled
+     * @param hashMap
      * @param word
      * @return true/false
      */
-    private boolean wasPrinted(HashMap incorrectSpelled, String word) {
-        return incorrectSpelled.get(word) != null;
+    private boolean wasPrinted(HashMap hashMap, String word) {
+        return hashMap.get(word) != null;
     }
 
     /**
@@ -216,7 +218,7 @@ public class Controller {
     /**
      * method that put english words in table
      *
-     * @return
+     * @return table
      */
     public Table<Integer, Integer, String> tableWords() {
         Table<Integer, Integer, String> table = HashBasedTable.create();
@@ -235,6 +237,11 @@ public class Controller {
         return table;
     }
 
+    /**
+     * get people names from file
+     *
+     * @return
+     */
     public Table<Integer, Integer, String> tableNames() {
         Table<Integer, Integer, String> table = HashBasedTable.create();
         try {
@@ -253,7 +260,6 @@ public class Controller {
         }
         return table;
     }
-
 
     /**
      * verify if word exists in table
@@ -278,42 +284,83 @@ public class Controller {
      * @param table
      * @return true/false
      */
-
     private boolean splittedWordsExists(String word, Table<Integer, Integer, String> table) {
         String words[] = word.split("\\W+");
         for (int k = 0; k < words.length; k++) {
-            int x = words[k].charAt(0) >= 'a' && words[k].charAt(0) <= 'z' ? words[k].charAt(0) - 97 : words[k].charAt(0) - 65;
-            if (!verifyInTable(table, words[k], x))
-                return false;
+            if (!words[k].isEmpty()) {
+                int x = words[k].charAt(0) >= 'a' && words[k].charAt(0) <= 'z' ? words[k].charAt(0) - 97 : words[k].charAt(0) - 65;
+                if (!verifyInTable(table, words[k], x))
+                    return false;
+            }
         }
         return true;
     }
 
-
+    /**
+     * verify if a string contains only letters
+     *
+     * @param word
+     * @return true/false
+     */
     private boolean containsOnlyLetter(String word) {
-        for(int i = 0; i < word.length(); i++)
+        for (int i = 0; i < word.length(); i++)
             if (!Character.isLetter(word.charAt(i)))
                 return false;
         return true;
     }
 
     /**
-     * Main function for spell checking
+     * get wrong words from splitted word
+     *
+     * @param table
+     * @param word
+     * @return wrongWords
      */
-    public void spellChecking() {
-        String text;
-        String[] words;
-        FileChooser fileChooser = new FileChooser();
+    private String[] getWrongWords(Table<Integer, Integer, String> table, String word) {
+        String[] words = word.split("\\W+");
+        String[] wrongWords = new String[0];
+        for (int k = 0; k < words.length; k++) {
+            if (!words[k].isEmpty()) {
+                int x = words[k].charAt(0) >= 'a' && words[k].charAt(0) <= 'z' ? words[k].charAt(0) - 97 : words[k].charAt(0) - 65;
+                if (!verifyInTable(table, words[k], x))
+                    wrongWords = addNewWrongWord(wrongWords, words[k]);
+            }
+        }
+        return wrongWords;
+    }
 
-        fileChooser.chooseFile();
-        this.setSource(fileChooser.getFile());
-        text = this.getText(SOURCE_FILE);
-        words = text.split("\\s+");
-        for (int i = 0; i < words.length; i++)
-            if (!words[i].contains("-") && !words[i].contains("/"))
-                words[i] = words[i].replaceAll("[^\\w]", "");
-        Table<Integer, Integer, String> table = tableWords();
-        printSpellChecking(table, words);
+    /**
+     * add new wrong word to wrong words array
+     *
+     * @param wrongWords
+     * @param word
+     * @return
+     */
+    private String[] addNewWrongWord(String[] wrongWords, String word) {
+        String[] strings = new String[wrongWords.length + 1];
+        int i;
+        for (i = 0; i < wrongWords.length; i++)
+            strings[i] = wrongWords[i];
+        strings[i] = word;
+        return strings;
+    }
+
+    /**
+     * ask user to add to dictionary "wrong" words
+     *
+     * @param wrongWords
+     */
+    private void doTheJob(String[] wrongWords) {
+        for (int i = 0; i < wrongWords.length; i++) {
+            if (!(wasPrinted(incorrectSpelled, wrongWords[i]) || wasPrinted(added, wrongWords[i]))) {
+                if (getOption(wrongWords[i]) == 0) {
+                    addToDictionary(wrongWords[i]);
+                    added.put(wrongWords[i], add++);
+                } else {
+                    incorrectSpelled.put(wrongWords[i], incorrect++);
+                }
+            }
+        }
     }
 
     /**
@@ -323,11 +370,10 @@ public class Controller {
      * @param words
      */
     public void printSpellChecking(Table<Integer, Integer, String> table, String[] words) {
-        HashMap incorrectSpelled = new HashMap();
-        HashMap added = new HashMap();
+        incorrectSpelled = new HashMap();
+        added = new HashMap();
         Table<Integer, Integer, String> tableNames = tableNames();
-        int add = 0, incorrect = 0;
-        boolean wasPrintedSmth = false;
+        boolean wasFoundSomething = false;
 
         for (int k = 0; k < words.length; k++) {
             if (!words[k].isEmpty()) {
@@ -338,40 +384,17 @@ public class Controller {
 
                         if (!containsOnlyLetter(words[k])) {
                             if (!splittedWordsExists(words[k], table)) {
-                                String wrongWords[] = getWrongWords(table, words[k]);
-                                doTheJob(wrongWords, added, add, incorrectSpelled, incorrect);
+                                doTheJob(getWrongWords(table, words[k]));
+                                wasFoundSomething = true;
                             }
                         }
-//                        if (words[k].contains("-") || words[k].contains("/"))
-//                            if (!verifySplitWords(table, words[k]))
-//                                if (!words[k].startsWith("-") && !words[k].endsWith("-") && getOption(words[k]) == 0) {
-//                                    addToDictionary(words[k]);
-//                                    added.put(words[k], add++);
-//                                    wasPrintedSmth = true;
-//                                } else {
-//                                    incorrectSpelled.put(words[k], incorrect++);
-//                                    wasPrintedSmth = true;
-//                                }
                     }
                 }
             }
         }
-        if (!wasPrintedSmth)
+        if (!wasFoundSomething)
             JOptionPane.showMessageDialog(null, "Nancy, chill!\nAll words are spelled correctly!", "Spell Checking", JOptionPane.INFORMATION_MESSAGE);
         System.out.println(added);
         System.out.println(incorrectSpelled);
     }
-
-    private String[] getWrongWords(Table<Integer, Integer, String> table, String word) {
-        String[] words = word.split("\\W+");
-        for (int k = 0; k < words.length; k++) {
-            int x = words[k].charAt(0) >= 'a' && words[k].charAt(0) <= 'z' ? words[k].charAt(0) - 97 : words[k].charAt(0) - 65;
-            if (verifyInTable(table, words[k], x))
-
-        }
-    }
-
-    private void doTheJob(String[] wrongWords, HashMap added, int add, HashMap incorrectSpelled, int incorrect) {
-    }
-
 }
