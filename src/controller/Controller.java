@@ -158,7 +158,11 @@ public class Controller {
      */
     private boolean isName(Table<Integer, Integer, String> tableNames, String word, int i) {
         if (!word.isEmpty()) {
-
+            for (int j = 0; j < tableNames.row(i).size(); j++) {
+                if (tableNames.get(i, j + 1).toLowerCase().equals(word.toLowerCase()))
+                    return true;
+            }
+            return false;
         }
         return false;
     }
@@ -270,23 +274,26 @@ public class Controller {
     /**
      * split the words and verify every word if exists
      *
-     * @param table
      * @param word
+     * @param table
      * @return true/false
      */
-    private boolean verifySplitWords(Table<Integer, Integer, String> table, String word) {
-        String[] words = word.split("-");
-        for (String x : words) {
-            int i = x.charAt(0) >= 'a' && x.charAt(0) <= 'z' ? x.charAt(0) - 97 : x.charAt(0) - 65;
-            if (!verifyInTable(table, x, i))
+
+    private boolean splittedWordsExists(String word, Table<Integer, Integer, String> table) {
+        String words[] = word.split("\\W+");
+        for (int k = 0; k < words.length; k++) {
+            int x = words[k].charAt(0) >= 'a' && words[k].charAt(0) <= 'z' ? words[k].charAt(0) - 97 : words[k].charAt(0) - 65;
+            if (!verifyInTable(table, words[k], x))
                 return false;
         }
-        words = word.split("/");
-        for (String x : words) {
-            int i = x.charAt(0) >= 'a' && x.charAt(0) <= 'z' ? x.charAt(0) - 97 : x.charAt(0) - 65;
-            if (!verifyInTable(table, x, i))
+        return true;
+    }
+
+
+    private boolean containsOnlyLetter(String word) {
+        for(int i = 0; i < word.length(); i++)
+            if (!Character.isLetter(word.charAt(i)))
                 return false;
-        }
         return true;
     }
 
@@ -329,21 +336,22 @@ public class Controller {
                     if (!isName(tableNames, words[k], i) && !isNumber(words[k]) && !verifyInTable(table, words[k], i) &&
                             added.get(words[k].toLowerCase()) == null && !isLink(words[k])) {
 
-                        if (words[k].startsWith("\"") || words[k].startsWith(".") || words[k].startsWith("'"))
-                            words[k] = words[k].substring(1);
-                        if (words[k].endsWith(",") || words[k].endsWith(".") || words[k].endsWith(";") || words[k].endsWith(":"))
-                            words[k] = words[k].substring(0, words[k].length() - 1);
-
-                        if (words[k].contains("-") || words[k].contains("/"))
-                            if (!verifySplitWords(table, words[k]))
-                                if (!words[k].startsWith("-") && !words[k].endsWith("-") && getOption(words[k]) == 0) {
-                                    addToDictionary(words[k]);
-                                    added.put(words[k], add++);
-                                    wasPrintedSmth = true;
-                                } else {
-                                    incorrectSpelled.put(words[k], incorrect++);
-                                    wasPrintedSmth = true;
-                                }
+                        if (!containsOnlyLetter(words[k])) {
+                            if (!splittedWordsExists(words[k], table)) {
+                                String wrongWords[] = getWrongWords(table, words[k]);
+                                doTheJob(wrongWords, added, add, incorrectSpelled, incorrect);
+                            }
+                        }
+//                        if (words[k].contains("-") || words[k].contains("/"))
+//                            if (!verifySplitWords(table, words[k]))
+//                                if (!words[k].startsWith("-") && !words[k].endsWith("-") && getOption(words[k]) == 0) {
+//                                    addToDictionary(words[k]);
+//                                    added.put(words[k], add++);
+//                                    wasPrintedSmth = true;
+//                                } else {
+//                                    incorrectSpelled.put(words[k], incorrect++);
+//                                    wasPrintedSmth = true;
+//                                }
                     }
                 }
             }
@@ -353,4 +361,17 @@ public class Controller {
         System.out.println(added);
         System.out.println(incorrectSpelled);
     }
+
+    private String[] getWrongWords(Table<Integer, Integer, String> table, String word) {
+        String[] words = word.split("\\W+");
+        for (int k = 0; k < words.length; k++) {
+            int x = words[k].charAt(0) >= 'a' && words[k].charAt(0) <= 'z' ? words[k].charAt(0) - 97 : words[k].charAt(0) - 65;
+            if (verifyInTable(table, words[k], x))
+
+        }
+    }
+
+    private void doTheJob(String[] wrongWords, HashMap added, int add, HashMap incorrectSpelled, int incorrect) {
+    }
+
 }
