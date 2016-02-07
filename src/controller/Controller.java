@@ -71,7 +71,7 @@ public class Controller {
             pdfStripper = new PDFTextStripper();
             pdDoc = new PDDocument(cosDoc);
             pdfStripper.setStartPage(1);
-            pdfStripper.setEndPage(16);
+            pdfStripper.setEndPage(200);
             text = pdfStripper.getText(pdDoc);
             pdDoc.close();
             cosDoc.close();
